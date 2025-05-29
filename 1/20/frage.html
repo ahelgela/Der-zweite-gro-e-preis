@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Frage</title>
+  <!-- Lokale CSS im gleichen Ordner wie die HTML-Datei -->
+  <link rel="stylesheet" href="frage.css" />
+  <style>
+    /* Optional: Bilder im Container zentrieren und anpassen */
+    .bilder-container {
+      margin: 20px 0;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    .bilder-container img {
+      max-height: 200px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      object-fit: contain;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="frage"></h1>
+
+    <div class="bilder-container" id="bilderContainer"></div>
+
+    <label>Minuten:
+      <select id="minuten"></select>
+    </label>
+    <label>Sekunden:
+      <select id="sekunden"></select>
+    </label>
+    <div>
+      <span id="timer">00:00</span>
+      <button id="startStopBtn" onclick="toggleTimer()">Start</button>
+      <button id="resetBtn" onclick="resetTimer()">Reset</button>
+    </div>
+
+    <button onclick="location.href='../../index.html'">Zurück zur Startseite</button>
+    <button onclick="location.href='antwort.html'">Lösung anzeigen</button>
+  </div>
+
+  <script>
+    // --- Frage anpassen ---
+    const frageText = "Wettessen";
+    // Beispiel: Mehrere Bilder einfügen (relativer Pfad zum Ordner)
+    // Leer lassen oder entfernen, wenn keine Bilder
+    const bilder = [
+    
+    ];
+
+    // --- Frage anzeigen ---
+    const frageElement = document.getElementById("frage");
+    frageElement.textContent = frageText;
+
+    // --- Bilder anzeigen ---
+    const bilderContainer = document.getElementById("bilderContainer");
+    bilder.forEach(src => {
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = "Fragebild";
+      bilderContainer.appendChild(img);
+    });
+
+    // --- Timer Dropdown befüllen ---
+    const minutenSelect = document.getElementById("minuten");
+    const sekundenSelect = document.getElementById("sekunden");
+    for (let i = 0; i <= 10; i++) {
+      const option = document.createElement("option");
+      option.value = i;
+      option.text = i.toString().padStart(2, '0');
+      minutenSelect.appendChild(option);
+    }
+    for (let i = 0; i < 60; i++) {
+      const option = document.createElement("option");
+      option.value = i;
+      option.text = i.toString().padStart(2, '0');
+      sekundenSelect.appendChild(option);
+    }
+
+    // --- Timer Logik ---
+    let timerInterval;
+    let totalSeconds = 0;
+    let isRunning = false;
+    let isFinished = false;
+
+    function updateTimerDisplay() {
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      document.getElementById("timer").textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function toggleTimer() {
+      const btn = document.getElementById("startStopBtn");
+      if (!isRunning && !isFinished) {
+        const selectedMinutes = parseInt(minutenSelect.value);
+        const selectedSeconds = parseInt(sekundenSelect.value);
+        totalSeconds = selectedMinutes * 60 + selectedSeconds;
+        if (totalSeconds <= 0) return;
+
+        minutenSelect.disabled = true;
+        sekundenSelect.disabled = true;
+
+        updateTimerDisplay();
+        timerInterval = setInterval(() => {
+          if (totalSeconds > 0) {
+            totalSeconds--;
+            updateTimerDisplay();
+          } else {
+            clearInterval(timerInterval);
+            isRunning = false;
+            isFinished = true;
+            btn.textContent = "Weiter";
+          }
+        }, 1000);
+        btn.textContent = "Stopp";
+        isRunning = true;
+      } else if (isRunning) {
+        clearInterval(timerInterval);
+        isRunning = false;
+        isFinished = true;
+        btn.textContent = "Weiter";
+      } else if (isFinished) {
+        isRunning = true;
+        isFinished = false;
+        btn.textContent = "Stopp";
+        timerInterval = setInterval(() => {
+          if (totalSeconds > 0) {
+            totalSeconds--;
+            updateTimerDisplay();
+          } else {
+            clearInterval(timerInterval);
+            isRunning = false;
+            btn.textContent = "Weiter";
+          }
+        }, 1000);
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      isRunning = false;
+      isFinished = false;
+      document.getElementById("startStopBtn").textContent = "Start";
+      totalSeconds = 0;
+      updateTimerDisplay();
+      minutenSelect.disabled = false;
+      sekundenSelect.disabled = false;
+    }
+  </script>
+</body>
+</html>

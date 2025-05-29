@@ -1,0 +1,128 @@
+/* Grundlayout */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f9;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Container zentriert alles */
+.container {
+  text-align: center;
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 90%;
+}
+
+/* Antwortüberschrift */
+h2 {
+  color: #2c3e50;
+  font-size: 1.8rem;
+  margin-bottom: 30px;
+}
+
+/* Bereich der Team-Buttons (für feste Punktevergabe) */
+#teamButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+/* Einheitlicher Stil für alle Buttons */
+button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #3498db; /* Blau */
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+button:hover {
+  background-color: #2980b9;
+  transform: scale(1.05);
+}
+
+button:active {
+  background-color: #1c5982;
+}
+
+/* Spezieller roter Button */
+button.red {
+  background-color: #e74c3c;
+}
+
+button.red:hover {
+  background-color: #c0392b;
+}
+
+/* Keine Umrandung bei Fokus */
+button:focus {
+  outline: none;
+}
+
+/* Trennlinie */
+hr {
+  margin: 30px 0;
+  border: none;
+  border-top: 1px solid #ddd;
+}
+
+/* Manuelle Punktevergabe Bereich */
+h3 {
+  color: #34495e;
+  margin-bottom: 15px;
+}
+
+/* Label Styling */
+label {
+  display: block;
+  margin: 10px 0 5px;
+  font-weight: bold;
+  color: #34495e;
+  font-size: 1rem;
+}
+
+/* Select und Input Styling */
+select, input[type="number"] {
+  padding: 8px 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 200px;
+  max-width: 100%;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+select:focus, input[type="number"]:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+/* Button für manuelle Punktevergabe */
+#manuellVergebenBtn {
+  background-color: #2ecc71; /* Grün */
+  margin-top: 10px;
+}
+
+#manuellVergebenBtn:hover {
+  background-color: #27ae60;
+}
+
+#manuellVergebenBtn:active {
+  background-color: #1e874b;
+}

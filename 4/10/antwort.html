@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Antwort</title>
+  <link rel="stylesheet" href="antwort.css">
+</head>
+<body>
+  <div class="container">
+    <h2 id="loesungText"></h2>
+
+    <div id="teamButtons"></div>
+
+    <button class="red" onclick="keinePunkte()">Keine Punkte vergeben</button>
+
+    <hr>
+
+    <h3>Manuelle Punktevergabe</h3>
+    <label for="teamSelect">Team auswählen:</label>
+    <select id="teamSelect"></select>
+
+    <label for="punkteInput">Punkte eingeben:</label>
+    <input type="number" id="punkteInput" value="0" min="0" step="1">
+
+    <button id="manuellVergebenBtn">Punkte vergeben</button>
+
+    <button onclick="location.href='../../index.html'">Zurück zur Startseite</button>
+
+    <script>
+      const frage = JSON.parse(localStorage.getItem('aktuelleFrage'));
+      const teams = JSON.parse(localStorage.getItem('teams') || '[]');
+      let punkte = JSON.parse(localStorage.getItem('punkte') || '{}');
+      let rückgängig = JSON.parse(localStorage.getItem('rückgängig') || '{}');
+
+      document.getElementById('loesungText').textContent = `9999 Schokolinsen`;
+
+      // Team Buttons für Standard-Punktevergabe
+      const tb = document.getElementById('teamButtons');
+      teams.forEach(team => {
+        const name = team.name || team;
+        const btn = document.createElement('button');
+        btn.textContent = `${name} +${frage.punkte}`;
+        btn.onclick = () => {
+          punkte[name] = (punkte[name] || 0) + frage.punkte;
+          rückgängig[`${frage.kat}_${frage.punkte}`] = name;
+          localStorage.setItem('punkte', JSON.stringify(punkte));
+          localStorage.setItem('rückgängig', JSON.stringify(rückgängig));
+          beenden();
+        };
+        tb.appendChild(btn);
+      });
+
+      // Keine Punkte vergeben Button
+      function keinePunkte() {
+        beenden();
+      }
+
+      // Beenden und zurück zur Startseite
+      function beenden() {
+        const benutzt = JSON.parse(localStorage.getItem('benutzt') || '{}');
+        benutzt[`${frage.kat}_${frage.punkte}`] = true;
+        localStorage.setItem('benutzt', JSON.stringify(benutzt));
+        location.href = '../../index.html';
+      }
+
+      // Manuelle Punktevergabe vorbereiten
+      const teamSelect = document.getElementById('teamSelect');
+      teams.forEach(team => {
+        const name = team.name || team;
+        const option = document.createElement('option');
+        option.value = name;
+        option.textContent = name;
+        teamSelect.appendChild(option);
+      });
+
+      document.getElementById('manuellVergebenBtn').onclick = () => {
+        const ausgewähltesTeam = teamSelect.value;
+        const punkteInput = parseInt(document.getElementById('punkteInput').value);
+
+        if (!ausgewähltesTeam) {
+          alert('Bitte ein Team auswählen.');
+          return;
+        }
+        if (isNaN(punkteInput) || punkteInput < 0) {
+          alert('Bitte eine gültige Punkteanzahl eingeben (0 oder mehr).');
+          return;
+        }
+
+        // Punkte hinzufügen
+        punkte[ausgewähltesTeam] = (punkte[ausgewähltesTeam] || 0) + punkteInput;
+        localStorage.setItem('punkte', JSON.stringify(punkte));
+
+        alert(`${punkteInput} Punkte wurden an ${ausgewähltesTeam} vergeben.`);
+
+        // Seite bleibt offen, Eingabefelder zurücksetzen
+        document.getElementById('punkteInput').value = 0;
+      };
+    </script>
+  </div>
+</body>
+</html>

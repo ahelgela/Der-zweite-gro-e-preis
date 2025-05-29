@@ -1,0 +1,103 @@
+/* Grundlayout */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f9;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Container für den Inhalt */
+.container {
+  text-align: center;
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 90%;
+}
+
+/* Überschrift */
+h1 {
+  color: #2c3e50;
+  font-size: 1.8rem;
+  margin-bottom: 30px;
+}
+
+/* Eingabefeld für Anzahl Teams */
+label {
+  font-size: 1rem;
+  color: #34495e;
+  margin-bottom: 20px;
+  display: block;
+}
+
+input[type="number"] {
+  padding: 8px;
+  font-size: 1rem;
+  margin-left: 10px;
+  border-radius: 6px;
+  border: 1px solid #bdc3c7;
+  width: 60px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+input[type="number"]:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+/* Teams Liste */
+#teams {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Jede Team-Zeile */
+#teams div {
+  font-size: 1.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #34495e;
+  font-weight: bold;
+}
+
+#teams div span {
+  margin-left: 10px;
+  font-size: 1.1rem;
+  color: #2ecc71; /* Grüne Farbe für Punkte */
+}
+
+/* Zurück Button */
+button {
+  padding: 12px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #3498db;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  margin-top: 30px;
+}
+
+button:hover {
+  background-color: #2980b9;
+  transform: scale(1.05);
+}
+
+button:active {
+  background-color: #1c5982;
+}
+
+button:focus {
+  outline: none;
+}

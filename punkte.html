@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Punkteübersicht</title>
+  <link rel="stylesheet" href="punkte.css"> <!-- CSS-Datei einbinden -->
+</head>
+<body>
+  <div class="container">
+    <h1>Punkteübersicht</h1>
+    <label>Anzahl Teams: <input type="number" id="anzahlTeams" min="1" max="10"></label>
+    <div id="teams"></div>
+    <button onclick="location.href='index.html'">Zurück</button>
+  </div>
+
+  <script>
+    const input = document.getElementById('anzahlTeams');
+    const teamsDiv = document.getElementById('teams');
+    let punkte = JSON.parse(localStorage.getItem('punkte') || '{}');
+    let teams = JSON.parse(localStorage.getItem('teams') || '[]');
+
+    function renderTeams() {
+      teamsDiv.innerHTML = '';
+      teams.forEach((team, index) => {
+        const name = team.name || team;
+        const div = document.createElement('div');
+        div.innerHTML = `<input value="${name}" onchange="updateTeamName(${index}, this.value)">: <span>${punkte[name] || 0}</span> Punkte`;
+        teamsDiv.appendChild(div);
+      });
+    }
+
+    function updateTeamName(index, value) {
+      const oldName = teams[index].name || teams[index];
+      const newPunkte = {};
+      Object.keys(punkte).forEach(key => {
+        if (key === oldName) newPunkte[value] = punkte[key];
+        else newPunkte[key] = punkte[key];
+      });
+      punkte = newPunkte;
+      teams[index] = { name: value };
+      localStorage.setItem('teams', JSON.stringify(teams));
+      localStorage.setItem('punkte', JSON.stringify(punkte));
+      renderTeams();
+    }
+
+    input.onchange = () => {
+      const anzahl = parseInt(input.value);
+      teams = [];
+      for (let i = 1; i <= anzahl; i++) teams.push({ name: `Team ${i}` });
+      localStorage.setItem('teams', JSON.stringify(teams));
+      renderTeams();
+    };
+
+    input.value = teams.length || 2;
+    renderTeams();
+  </script>
+</body>
+</html>

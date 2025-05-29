@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Der Große Preis</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Der Große Preis</h1>
+    
+    <div id="kategorienWrapper">
+      <div id="kategorien"></div>
+    </div>
+
+    <div class="button-row">
+      <button onclick="location.href='punkte.html'">Punkteübersicht</button>
+      <button onclick="toggleFreigabeModus()">Freigabemodus: <span id="freigabeStatus">Aus</span></button>
+      <button id="resetButton" style="display:none;" onclick="resetAlles()">Zurücksetzen</button>
+    </div>
+  </div>
+
+  <script>
+    const kategorien = ['Action', 'Jugend/ Jungschar', 'Bibel Wissen', 'Na (un)Logisch', 'CVJM'];
+    let benutzt = JSON.parse(localStorage.getItem('benutzt') || '{}');
+    let rückgängig = JSON.parse(localStorage.getItem('rückgängig') || '{}');
+    let punkte = JSON.parse(localStorage.getItem('punkte') || '{}');
+    let freigabeModus = localStorage.getItem('freigabeModus') === 'true';
+
+    function init() {
+      const katDiv = document.getElementById('kategorien');
+      katDiv.innerHTML = '';
+      kategorien.forEach((kat, index) => {
+        const katIndex = index + 1; // Kategorie als Zahl (1-basiert)
+        const div = document.createElement('div');
+        div.className = 'kategorie';
+        div.innerHTML = `<h3>${kat}</h3>`;
+        const grid = document.createElement('div');
+        grid.className = 'button-grid';
+        [10, 20, 30].forEach(punkteWert => {
+          const id = `${kat}_${punkteWert}`;
+          const btn = document.createElement('button');
+          btn.textContent = `${punkteWert} Punkte`;
+          btn.id = id;
+          btn.className = 'initial';
+
+          const istBenutzt = benutzt[id];
+
+          if (istBenutzt) {
+            btn.classList.add('disabled');
+            if (freigabeModus) {
+              btn.style.pointerEvents = 'auto';
+            } else {
+              btn.style.pointerEvents = 'none';
+            }
+          }
+
+          btn.onclick = () => {
+            if (freigabeModus && istBenutzt) {
+              const team = rückgängig[id];
+              if (team) {
+                punkte[team] = (punkte[team] || 0) - punkteWert;
+                delete rückgängig[id];
+              }
+              delete benutzt[id];
+              localStorage.setItem('punkte', JSON.stringify(punkte));
+              localStorage.setItem('benutzt', JSON.stringify(benutzt));
+              localStorage.setItem('rückgängig', JSON.stringify(rückgängig));
+              localStorage.setItem('freigabeModus', false);
+              freigabeModus = false;
+              init();
+              return;
+            } else if (!freigabeModus && !istBenutzt) {
+              // Speichere Kategorie und Punkte
+              localStorage.setItem('aktuelleFrage', JSON.stringify({kat, punkte: punkteWert}));
+              // Weiterleitung in Ordnerstruktur:
+              location.href = `${katIndex}/${punkteWert}/frage.html`;
+            }
+          };
+
+          grid.appendChild(btn);
+        });
+        div.appendChild(grid);
+        katDiv.appendChild(div);
+      });
+
+      document.getElementById('freigabeStatus').textContent = freigabeModus ? "An" : "Aus";
+      document.getElementById('resetButton').style.display = freigabeModus ? 'inline-block' : 'none';
+    }
+
+    function toggleFreigabeModus() {
+      freigabeModus = !freigabeModus;
+      localStorage.setItem('freigabeModus', freigabeModus);
+      init();
+    }
+
+    function resetAlles() {
+      const confirmReset = confirm("Möchtest du wirklich alle Punkte zurücksetzen und alle Buttons freigeben?");
+      if (!confirmReset) return;
+
+      benutzt = {};
+      rückgängig = {};
+      punkte = {};
+      localStorage.setItem('benutzt', JSON.stringify(benutzt));
+      localStorage.setItem('rückgängig', JSON.stringify(rückgängig));
+      localStorage.setItem('punkte', JSON.stringify(punkte));
+      localStorage.setItem('freigabeModus', false);
+      freigabeModus = false;
+      init();
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
